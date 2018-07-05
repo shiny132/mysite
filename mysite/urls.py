@@ -30,12 +30,18 @@ urlpatterns = [
     path('user/login', user_views.login),
     path('user/logout', user_views.logout),
 
-    path('user/writeform', board_views.writeform),
-
     path('admin/', admin.site.urls),
 
     path('guestbook/', guestbook_views.list),
     path('guestbook/add', guestbook_views.add),
     path('guestbook/deleteform', guestbook_views.deleteform),
-    path('guestbook/delete', guestbook_views.delete)
+    path('guestbook/delete', guestbook_views.delete),
+
+    path('board/', board_views.list),
+    path('board/writeform', board_views.writeform),
+    path('board/write', board_views.write),
+    path('board/view', board_views.view),
+    path('board/delete', board_views.delete),
+    path('board/modifyform', board_views.modifyform),
+    path('board/modify', board_views.modify)
 ]
