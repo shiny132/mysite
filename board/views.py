@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.db.models import F
 from board.models import Board
 
 # Create your views here.
@@ -27,8 +28,10 @@ def write(request):
 
 def view(request):
     try:
-        exception = request.session['authuser']['id'] # 로그인 되어있지 않을 시 예외발생시키는 코드
+        request.session['authuser']['id'] # 로그인 되어있지 않을 시 예외발생시키는 코드
         board_list = Board.objects.filter(id=request.GET['id'])
+        if request.GET['hit'] == '1':
+            Board.objects.filter(id=request.GET['id']).update(hit=F('hit')+1)
         context = {'board_list': board_list}
         return render(request, 'board/view.html', context)
     except:
@@ -51,7 +54,7 @@ def modifyform(request):
         context = {'board_list' : board_list}
         return render(request, 'board/modify.html', context)
     else:
-        return HttpResponseRedirect('/board/view?id=' + request.GET['id'])
+        return HttpResponseRedirect('/board/view?id=' + request.GET['id']+'&hit=0')
 
 def modify(request):
     board_rm = Board.objects.filter(id=request.GET['id'])
@@ -61,4 +64,9 @@ def modify(request):
 
         boards.save()
 
-    return HttpResponseRedirect('/board/view?id=' + request.GET['id'])
+    return HttpResponseRedirect('/board/view?id=' + request.GET['id']+'&hit=0')
+
+def find(request):
+    f = request.GET['kwd']
+    board_list = Board.objects.filter(title__icontains=f).order_by('-regdate')
+    return render(request, 'board/list.html', {'board_list' : board_list})
